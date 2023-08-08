@@ -2,6 +2,7 @@ package com.lxy.controller;
 
 import com.lxy.domain.ResponseResult;
 import com.lxy.domain.entity.LoginUser;
+import com.lxy.domain.entity.Menu;
 import com.lxy.domain.entity.User;
 import com.lxy.domain.vo.AdminUserInfoVo;
 import com.lxy.domain.vo.RoutersVo;
@@ -57,7 +58,9 @@ public class AdminLoginController {
 
     @GetMapping("/getRouters")
     public ResponseResult<RoutersVo> getRouters(){
-        return null;
+        Long userId = SecurityUtils.getUserId();
+        List<Menu> menus = menuService.selectRouterMenuTreeByUserId(userId);
+        return ResponseResult.okResult(new RoutersVo(menus));
     }
 
 }

@@ -7,9 +7,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 菜单权限表
@@ -19,6 +21,10 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+/**
+ * 开启链式编程，使set方法有返回值
+ */
+@Accessors(chain = true)
 public class Menu implements Serializable {
     /**
      * 菜单ID
@@ -130,4 +136,7 @@ public class Menu implements Serializable {
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    @TableField(exist = false)
+    private List<Menu> children;
 }

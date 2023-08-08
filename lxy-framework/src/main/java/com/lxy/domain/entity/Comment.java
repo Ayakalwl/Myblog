@@ -1,6 +1,8 @@
 package com.lxy.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -16,6 +18,7 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@ApiModel(description = "添加评论dto")
 public class Comment implements Serializable {
     /**
      * 
@@ -26,6 +29,7 @@ public class Comment implements Serializable {
     /**
      * 评论类型（0代表文章评论，1代表友链评论）
      */
+    @ApiModelProperty(notes = "评论类型（0代表文章评论，1代表友链评论）")
     @TableField(value = "type")
     private String type;
 
