@@ -13,10 +13,12 @@ public enum AppHttpCodeEnum {
     CONTENT_NOT_NULL(506, "评论内容不能为空"),
     FILE_TYPE_ERROR(507, "文件类型错误，请上传png文件"),
     USERNAME_NOT_NULL(508, "用户名不能为空"),
+    TAG_NOT_NULL(513, "标签不能为空"),
     NICKNAME_NOT_NULL(509, "昵称不能为空"),
     PASSWORD_NOT_NULL(510, "密码不能为空"),
     EMAIL_NOT_NULL(511, "邮箱不能为空"),
     NICKNAME_EXIST(512, "昵称已存在"),
+    MENU_PID_NOT_NULL(514, "存在子菜单不允许删除"),
     LOGIN_ERROR(505,"用户名或密码错误");
     int code;
     String msg;

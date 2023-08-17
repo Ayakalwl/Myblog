@@ -30,5 +30,19 @@
         ORDER BY
             m.parent_id,m.order_num
     </select>
+    <select id="selectMenuRoleVoTree" resultType="com.lxy.domain.vo.MenuRoleVo">
+        SELECT
+            id,
+            parent_id,
+            menu_name as label
+        FROM
+             sys_menu
+        WHERE
+              status = 0
+        ORDER BY
+            parent_id,order_num
+    </select>
+
+    <select id="selectMenuRoleVoTreeById" resultType="com.lxy.domain.vo.MenuRoleVo"></select>
 
 </mapper>

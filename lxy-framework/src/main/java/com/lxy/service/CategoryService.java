@@ -3,6 +3,9 @@ package com.lxy.service;
 import com.lxy.domain.ResponseResult;
 import com.lxy.domain.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.lxy.domain.vo.CategoryVo;
+
+import java.util.List;
 
 /**
 * @author 爱宕
@@ -12,4 +15,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface CategoryService extends IService<Category> {
 
     ResponseResult getCategoryList();
+
+    List<CategoryVo> listAllCategor();
 }

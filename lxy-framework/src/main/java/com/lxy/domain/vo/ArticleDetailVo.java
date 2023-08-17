@@ -29,5 +29,4 @@ public class ArticleDetailVo {
     //时间
     private Date createTime;
 
-
 }

@@ -7,6 +7,8 @@ import com.lxy.domain.entity.User;
  * @author 爱宕
  * @description 用户登录登出
  */
-public interface AdminLoginService {
+public interface LoginService {
     ResponseResult login(User user);
+
+    ResponseResult logout();
 }

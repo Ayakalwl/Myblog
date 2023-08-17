@@ -2,8 +2,10 @@ package com.lxy.controller;
 
 import com.lxy.constants.SystemConstants;
 import com.lxy.domain.ResponseResult;
+import com.lxy.domain.dto.AddCommentDto;
 import com.lxy.domain.entity.Comment;
 import com.lxy.service.CommentService;
+import com.lxy.utils.BeanCopyUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -25,8 +27,9 @@ public class CommentController {
     }
 
     @PostMapping
-    public ResponseResult addComment(@RequestBody Comment comment){
-        return commentService.addComment(comment);
+    public ResponseResult addComment(@RequestBody AddCommentDto comment){
+        Comment comment1 = BeanCopyUtils.copyBean(comment, Comment.class);
+        return commentService.addComment(comment1);
     }
 
     @GetMapping("/linkCommentList")

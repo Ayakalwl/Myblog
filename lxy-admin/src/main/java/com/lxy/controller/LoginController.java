@@ -9,7 +9,7 @@ import com.lxy.domain.vo.RoutersVo;
 import com.lxy.domain.vo.UserInfoVo;
 import com.lxy.enums.AppHttpCodeEnum;
 import com.lxy.exception.SystemException;
-import com.lxy.service.AdminLoginService;
+import com.lxy.service.LoginService;
 import com.lxy.service.MenuService;
 import com.lxy.service.RoleService;
 import com.lxy.utils.BeanCopyUtils;
@@ -24,9 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-public class AdminLoginController {
+public class LoginController {
     @Autowired
-    private AdminLoginService adminLoginService;
+    private LoginService loginService;
 
     @Autowired
     private MenuService menuService;
@@ -38,7 +38,12 @@ public class AdminLoginController {
     public ResponseResult login(@RequestBody User user){
         if(!StringUtils.hasText(user.getUserName())){
             throw new SystemException(AppHttpCodeEnum.REQUIRE_USERNAME);
-        }       return adminLoginService.login(user);
+        }       return loginService.login(user);
+    }
+
+    @PostMapping("/user/logout")
+    public ResponseResult logout(){
+        return loginService.logout();
     }
 
     @GetMapping("/getInfo")

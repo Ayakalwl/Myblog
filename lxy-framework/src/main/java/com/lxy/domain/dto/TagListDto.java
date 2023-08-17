@@ -1,14 +1,13 @@
-package com.lxy.domain.vo;
+package com.lxy.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class CategoryVo {
-    private Long id;
+@NoArgsConstructor
+public class TagListDto {
     private String name;
-    private String description;
+    private String remark;
 }

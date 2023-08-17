@@ -1,5 +1,8 @@
 package com.lxy.service;
 
+import com.lxy.domain.dto.AddArticleDto;
+import com.lxy.domain.dto.ArticleDto;
+import com.lxy.domain.dto.UpdateArticleDto;
 import com.lxy.domain.entity.Article;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lxy.domain.ResponseResult;
@@ -18,4 +21,14 @@ public interface ArticleService extends IService<Article> {
     ResponseResult getArticleDetail(Long id);
 
     ResponseResult updateViewCount(Long id);
+
+    ResponseResult add(AddArticleDto articleDto);
+
+    ResponseResult articleList(Integer pageNum, Integer pageSize, ArticleDto articleDto);
+
+    ResponseResult getArticle(Integer id);
+
+    ResponseResult updateArticle(UpdateArticleDto updateArticleDto);
+
+    ResponseResult deleteArticle(Integer id);
 }

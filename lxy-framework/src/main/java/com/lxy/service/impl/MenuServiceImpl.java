@@ -3,11 +3,20 @@ package com.lxy.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lxy.constants.SystemConstants;
+import com.lxy.domain.ResponseResult;
+import com.lxy.domain.dto.MenuDto;
 import com.lxy.domain.entity.Menu;
+import com.lxy.domain.vo.MenuRoleVo;
+import com.lxy.domain.vo.MenuVo;
+import com.lxy.domain.vo.RoutersVo;
+import com.lxy.enums.AppHttpCodeEnum;
+import com.lxy.exception.SystemException;
 import com.lxy.mapper.MenuMapper;
 import com.lxy.service.MenuService;
+import com.lxy.utils.BeanCopyUtils;
 import com.lxy.utils.SecurityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,6 +68,63 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         return menuTree;
     }
 
+    @Override
+    public ResponseResult getList(MenuDto menuDto) {
+        LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.hasText(menuDto.getMenuName()),Menu::getMenuName,menuDto.getMenuName())
+                .like(StringUtils.hasText(menuDto.getStatus()),Menu::getStatus,menuDto.getStatus())
+                .orderBy(true,true,Menu::getParentId,Menu::getOrderNum);
+        List<MenuVo> menuVoList = BeanCopyUtils.copyBeanList(list(wrapper), MenuVo.class);
+        return ResponseResult.okResult(menuVoList);
+    }
+
+    @Override
+    public ResponseResult addMenu(Menu menu) {
+        save(menu);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult getMenu(Integer id) {
+        Menu menu = getById(id);
+        MenuVo menuVo = BeanCopyUtils.copyBean(menu, MenuVo.class);
+        return ResponseResult.okResult(menuVo);
+    }
+
+    @Override
+    public ResponseResult upDateMenu(Menu menu) {
+        save(menu);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult removeMenu(Integer menuId) {
+        LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(Menu::getParentId, menuId);
+        List<Menu> list = list(wrapper);
+        if (!list.isEmpty()){
+            throw new SystemException(AppHttpCodeEnum.MENU_PID_NOT_NULL);
+        }
+        removeById(menuId);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult treeSelect() {
+        List<MenuRoleVo> menuRoleVos = getBaseMapper().selectMenuRoleVoTree();
+        List<MenuRoleVo> menuRoleVoTree = builderMenuRoleVoTree(menuRoleVos, 0L);
+        return ResponseResult.okResult(menuRoleVoTree);
+    }
+
+    @Override
+    public ResponseResult roleMenuTreeselect(Long id) {
+        List<MenuRoleVo> menuRoleVos = getBaseMapper().selectMenuRoleVoTreeById(id);
+        List<MenuRoleVo> menuRoleVoTree = builderMenuRoleVoTree(menuRoleVos,0L);
+        List<RoutersVo> routersVos = BeanCopyUtils.copyBeanList(menuRoleVoTree, RoutersVo.class);
+        return ResponseResult.okResult(routersVos);
+    }
+
+
     private List<Menu> builderMenuTree(List<Menu> menus, Long parentId) {
         List<Menu> menuTree = menus.stream()
                 .filter(menu -> menu.getParentId().equals(parentId))
@@ -66,6 +132,16 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
                 .collect(Collectors.toList());
         return menuTree;
     }
+
+
+    private List<MenuRoleVo> builderMenuRoleVoTree(List<MenuRoleVo> menus, Long parentId) {
+        List<MenuRoleVo> menuTree = menus.stream()
+                .filter(menu -> menu.getParentId().equals(parentId))
+                .peek(menu -> menu.setChildren(builderMenuRoleVoTree(menus, menu.getId())))
+                .collect(Collectors.toList());
+        return menuTree;
+    }
+
 
     /**
      * 获取存入参数的 子Menu集合

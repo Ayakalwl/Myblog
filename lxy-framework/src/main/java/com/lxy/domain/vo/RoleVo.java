@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryVo {
+public class RoleVo {
     private Long id;
-    private String name;
-    private String description;
+    private String roleKey;
+    private String roleName;
+    private Integer roleSort;
+    private String status;
+    private String remark;
 }

@@ -15,6 +15,9 @@ public class SystemConstants
 
     public static final String LINK_STATUS_NORMAL = "0";
 
+    /** 正常状态 */
+    public static final String NORMAL = "0";
+
     /**
      * 评论类型为：文章评论
      */
@@ -28,4 +31,5 @@ public class SystemConstants
     public static final String MENU = "C";
     public static final String BUTTON = "F";
     public static final String DIRECTORY = "M";
+    public static final String ADMAIN = "1";
 }
