@@ -42,7 +42,17 @@
         ORDER BY
             parent_id,order_num
     </select>
-
-    <select id="selectMenuRoleVoTreeById" resultType="com.lxy.domain.vo.MenuRoleVo"></select>
+    <select id="getCheckedKeys" resultType="java.lang.Integer">
+        SELECT
+            DISTINCT m.id
+        FROM
+            sys_menu m
+            LEFT JOIN sys_role_menu srm ON m.id = srm.menu_id
+            LEFT JOIN sys_role r ON r.id = srm.role_id
+        WHERE
+            r.id = #{id} AND
+            m.status = 0 AND
+            m.del_flag = 0
+    </select>
 
 </mapper>

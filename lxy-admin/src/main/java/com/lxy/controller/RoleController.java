@@ -33,4 +33,19 @@ public class RoleController {
     public ResponseResult getRole(@PathVariable("id") Long id){
         return roleService.getRole(id);
     }
+
+    @PutMapping
+    public ResponseResult updateRole(@RequestBody RoleDto roleDto){
+        return roleService.updateRole(roleDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseResult deleteRole(@PathVariable Integer id){
+        return roleService.deleteRole(id);
+    }
+
+    @GetMapping("/listAllRole")
+    public ResponseResult getListAllRole(){
+        return roleService.getListAllRole();
+    }
 }

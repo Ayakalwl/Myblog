@@ -77,6 +77,32 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
         RoleVo roleVo = BeanCopyUtils.copyBean(role, RoleVo.class);
         return ResponseResult.okResult(roleVo);
     }
+
+    @Override
+    public ResponseResult updateRole(RoleDto roleDto) {
+        Role role = BeanCopyUtils.copyBean(roleDto, Role.class);
+        updateById(role);
+        LambdaQueryWrapper<RoleMenu> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(RoleMenu::getRoleId,role.getId());
+        roleMenuService.remove(wrapper);
+        List<RoleMenu> roleMenus = roleDto.getMenuIds().stream()
+                .map(menuId -> new RoleMenu(role.getId(), menuId))
+                .collect(Collectors.toList());
+        roleMenuService.saveBatch(roleMenus);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult deleteRole(Integer id) {
+        removeById(id);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult getListAllRole() {
+        List<Role> listAllRole = list();
+        return ResponseResult.okResult(listAllRole);
+    }
 }
 
 

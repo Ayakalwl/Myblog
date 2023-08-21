@@ -2,6 +2,7 @@ package com.lxy.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lxy.domain.ResponseResult;
+import com.lxy.domain.dto.UserDto;
 import com.lxy.domain.entity.User;
 
 
@@ -16,4 +17,8 @@ public interface UserService extends IService<User> {
     ResponseResult userInfo();
     ResponseResult updateUserInfo(User user);
     ResponseResult register(User user);
+
+    ResponseResult getList(Integer pageNum, Integer pageSize, UserDto userDto);
+
+    ResponseResult addUser(UserDto userDto);
 }

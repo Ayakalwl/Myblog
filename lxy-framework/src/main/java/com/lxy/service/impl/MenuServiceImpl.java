@@ -8,7 +8,6 @@ import com.lxy.domain.dto.MenuDto;
 import com.lxy.domain.entity.Menu;
 import com.lxy.domain.vo.MenuRoleVo;
 import com.lxy.domain.vo.MenuVo;
-import com.lxy.domain.vo.RoutersVo;
 import com.lxy.enums.AppHttpCodeEnum;
 import com.lxy.exception.SystemException;
 import com.lxy.mapper.MenuMapper;
@@ -110,18 +109,16 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
     }
 
     @Override
-    public ResponseResult treeSelect() {
+    public List<MenuRoleVo> treeSelect() {
         List<MenuRoleVo> menuRoleVos = getBaseMapper().selectMenuRoleVoTree();
         List<MenuRoleVo> menuRoleVoTree = builderMenuRoleVoTree(menuRoleVos, 0L);
-        return ResponseResult.okResult(menuRoleVoTree);
+        return menuRoleVoTree;
     }
 
     @Override
-    public ResponseResult roleMenuTreeselect(Long id) {
-        List<MenuRoleVo> menuRoleVos = getBaseMapper().selectMenuRoleVoTreeById(id);
-        List<MenuRoleVo> menuRoleVoTree = builderMenuRoleVoTree(menuRoleVos,0L);
-        List<RoutersVo> routersVos = BeanCopyUtils.copyBeanList(menuRoleVoTree, RoutersVo.class);
-        return ResponseResult.okResult(routersVos);
+    public List<Integer> getCheckedKeys(Long id) {
+        List<Integer> checkedKeys = getBaseMapper().getCheckedKeys(id);
+        return checkedKeys;
     }
 
 

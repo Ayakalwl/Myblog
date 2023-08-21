@@ -196,7 +196,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     public ResponseResult deleteArticle(Integer id) {
-        deleteArticle(id);
+        removeById(id);
         return ResponseResult.okResult();
     }
 }

@@ -17,7 +17,8 @@ public interface MenuMapper extends BaseMapper<Menu> {
 
     List<MenuRoleVo> selectMenuRoleVoTree();
 
-    List<MenuRoleVo> selectMenuRoleVoTreeById(Long id);
+    List<Integer> getCheckedKeys(Long id);
+
 }
 
 

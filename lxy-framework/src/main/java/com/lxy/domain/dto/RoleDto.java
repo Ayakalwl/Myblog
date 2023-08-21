@@ -10,6 +10,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleDto {
+    private Long id;
     private String roleName;
     private String status;
     private String roleKey;

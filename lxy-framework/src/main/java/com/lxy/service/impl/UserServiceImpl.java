@@ -1,13 +1,19 @@
 package com.lxy.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lxy.domain.ResponseResult;
+import com.lxy.domain.dto.UserDto;
 import com.lxy.domain.entity.User;
+import com.lxy.domain.entity.UserRole;
+import com.lxy.domain.vo.PageVo;
 import com.lxy.domain.vo.UserInfoVo;
+import com.lxy.domain.vo.UserVo;
 import com.lxy.enums.AppHttpCodeEnum;
 import com.lxy.exception.SystemException;
 import com.lxy.mapper.UserMapper;
+import com.lxy.service.UserRoleService;
 import com.lxy.service.UserService;
 import com.lxy.utils.BeanCopyUtils;
 import com.lxy.utils.SecurityUtils;
@@ -15,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户表(User)表服务实现类
@@ -44,6 +53,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Override
     public ResponseResult register(User user) {
         //对数据进行非空判断
@@ -75,6 +85,71 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return ResponseResult.okResult();
     }
 
+    //后台查询所有用户
+
+    @Override
+    public ResponseResult getList(Integer pageNum, Integer pageSize, UserDto userDto) {
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.hasText(userDto.getUserName()),User::getUserName,userDto.getUserName())
+                .eq(StringUtils.hasText(userDto.getPhonenumber()),User::getPhonenumber,userDto.getPhonenumber())
+                .eq(StringUtils.hasText(userDto.getStatus()), User::getStatus, userDto.getStatus());
+        Page<User> page = new Page(pageNum,pageSize);
+        page(page,wrapper);
+        List<User> records = page.getRecords();
+        List<UserVo> userVos = BeanCopyUtils.copyBeanList(records, UserVo.class);
+        PageVo pageVo = new PageVo(userVos, page.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
+
+    //后台添加用户
+
+    @Autowired
+    private UserRoleService userRoleService;
+
+    @Override
+    public ResponseResult addUser(UserDto userDto) {
+
+        User user = BeanCopyUtils.copyBean(userDto, User.class);
+
+        //对数据进行非空判断
+        if(!StringUtils.hasText(user.getUserName())){
+            throw new SystemException(AppHttpCodeEnum.USERNAME_NOT_NULL);
+        }
+        if(!StringUtils.hasText(user.getPassword())){
+            throw new SystemException(AppHttpCodeEnum.PASSWORD_NOT_NULL);
+        }
+        if(!StringUtils.hasText(user.getNickName())){
+            throw new SystemException(AppHttpCodeEnum.NICKNAME_NOT_NULL);
+        }
+        if(!StringUtils.hasText(user.getEmail())){
+            throw new SystemException(AppHttpCodeEnum.EMAIL_NOT_NULL);
+        }
+        //对数据进行是否存在的判断
+        if(userNameExist(user.getUserName())){
+            throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
+        }
+        if(nickNameExist(user.getPhonenumber())){
+            throw new SystemException(AppHttpCodeEnum.PHONENUMBER_EXIST);
+        }
+        if(nickNameExist(user.getEmail())){
+            throw new SystemException(AppHttpCodeEnum.EMAIL_EXIST);
+        }
+        //...
+        //对密码进行加密
+        String encodePassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodePassword);
+        //存入数据库
+        save(user);
+
+        List<UserRole> userRoles = userDto.getRoleIds().stream()
+                .map(roleId -> new UserRole(roleId, user.getId()))
+                .collect(Collectors.toList());
+
+        userRoleService.saveBatch(userRoles);
+        return ResponseResult.okResult();
+    }
+
+
     private boolean nickNameExist(String nickName) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getNickName,nickName);
@@ -84,6 +159,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private boolean userNameExist(String userName) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getUserName,userName);
+        return count(queryWrapper)>0;
+    }
+
+    private boolean phonenumberExist(String phonenumber) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getPhonenumber,phonenumber);
+        return count(queryWrapper)>0;
+    }
+
+    private boolean emailExist(String email) {
+        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(User::getEmail,email);
         return count(queryWrapper)>0;
     }
 }
