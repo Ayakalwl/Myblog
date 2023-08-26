@@ -1,8 +1,11 @@
 package com.lxy.service;
 
-import com.lxy.domain.entity.Link;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lxy.domain.ResponseResult;
+import com.lxy.domain.dto.LinkDto;
+import com.lxy.domain.entity.Link;
+
+import java.util.List;
 
 /**
 * @author 爱宕
@@ -12,4 +15,15 @@ import com.lxy.domain.ResponseResult;
 public interface LinkService extends IService<Link> {
 
     ResponseResult getAllLink();
+
+    ResponseResult getList(Integer pageNum, Integer pageSize, LinkDto linkDto);
+
+    ResponseResult addLink(LinkDto linkDto);
+
+    ResponseResult getLink(Long id);
+
+    ResponseResult updateLink(LinkDto linkDto);
+
+    ResponseResult deleteLink(List<Long> id);
+
 }

@@ -9,6 +9,7 @@ import java.util.Date;
 
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
+    //插入时填充策略
     @Override
     public void insertFill(MetaObject metaObject) {
         Long userId = null;
@@ -16,8 +17,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
             userId = SecurityUtils.getUserId();
         } catch (Exception e) {
             e.printStackTrace();
-            //表示是自己创建
-            userId = -1L;
+            userId = -1L;//表示是自己创建
         }
         this.setFieldValByName("createTime", new Date(), metaObject);
         this.setFieldValByName("createBy",userId , metaObject);
@@ -25,6 +25,7 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
         this.setFieldValByName("updateBy", userId, metaObject);
     }
 
+    //更新时填充策略
     @Override
     public void updateFill(MetaObject metaObject) {
         this.setFieldValByName("updateTime", new Date(), metaObject);

@@ -8,6 +8,8 @@ import com.lxy.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/content/article")
 public class ArticleController {
@@ -36,7 +38,7 @@ public class ArticleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseResult delete(@PathVariable Integer id){
+    public ResponseResult delete(@PathVariable List<Long> id){
         return articleService.deleteArticle(id);
     }
 }

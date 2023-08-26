@@ -7,6 +7,8 @@ import com.lxy.service.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/system/role")
 public class RoleController {
@@ -40,7 +42,7 @@ public class RoleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseResult deleteRole(@PathVariable Integer id){
+    public ResponseResult deleteRole(@PathVariable List<Long> id){
         return roleService.deleteRole(id);
     }
 

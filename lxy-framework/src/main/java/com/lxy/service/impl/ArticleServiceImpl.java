@@ -195,8 +195,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     }
 
     @Override
-    public ResponseResult deleteArticle(Integer id) {
-        removeById(id);
+    public ResponseResult deleteArticle(List<Long> id) {
+        for (Long articleId:id){
+            removeById(articleId);
+        }
         return ResponseResult.okResult();
     }
 }

@@ -29,7 +29,7 @@ public class TagController {
 
 
     @DeleteMapping("/{id}")
-    public ResponseResult deleteTag(@PathVariable("id") List<Long> id) {
+    public ResponseResult deleteTag(@PathVariable() List<Long> id) {
         return tagService.deleteTag(id);
     }
 

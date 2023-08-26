@@ -5,14 +5,18 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.lxy.domain.ResponseResult;
 import com.lxy.domain.dto.UserDto;
+import com.lxy.domain.dto.UserUpdateDto;
+import com.lxy.domain.entity.Role;
 import com.lxy.domain.entity.User;
 import com.lxy.domain.entity.UserRole;
 import com.lxy.domain.vo.PageVo;
 import com.lxy.domain.vo.UserInfoVo;
+import com.lxy.domain.vo.UserRoleVo;
 import com.lxy.domain.vo.UserVo;
 import com.lxy.enums.AppHttpCodeEnum;
 import com.lxy.exception.SystemException;
 import com.lxy.mapper.UserMapper;
+import com.lxy.service.RoleService;
 import com.lxy.service.UserRoleService;
 import com.lxy.service.UserService;
 import com.lxy.utils.BeanCopyUtils;
@@ -128,11 +132,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(userNameExist(user.getUserName())){
             throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
         }
-        if(nickNameExist(user.getPhonenumber())){
+        if(phonenumberExist(user.getPhonenumber())){
             throw new SystemException(AppHttpCodeEnum.PHONENUMBER_EXIST);
         }
-        if(nickNameExist(user.getEmail())){
+        if(emailExist(user.getEmail())){
             throw new SystemException(AppHttpCodeEnum.EMAIL_EXIST);
+        }
+        if(nickNameExist(user.getNickName())){
+            throw new SystemException(AppHttpCodeEnum.NICKNAME_EXIST);
         }
         //...
         //对密码进行加密
@@ -142,9 +149,56 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         save(user);
 
         List<UserRole> userRoles = userDto.getRoleIds().stream()
-                .map(roleId -> new UserRole(roleId, user.getId()))
+                .map(roleId -> new UserRole(user.getId(),roleId))
                 .collect(Collectors.toList());
 
+        userRoleService.saveBatch(userRoles);
+        return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult removeUser(List<Long> id) {
+        for(Long userId : id){
+            removeById(userId);
+        }
+        return ResponseResult.okResult();
+    }
+
+    @Autowired
+    private RoleService roleService;
+
+    @Override
+    public ResponseResult getUser(Long id) {
+        //获取用户所关联的角色id列表
+        LambdaQueryWrapper<UserRole> userRoleLambdaQueryWrapper = new LambdaQueryWrapper<>();
+        userRoleLambdaQueryWrapper.eq(UserRole::getUserId,id);
+        List<UserRole> userRoles = userRoleService.list(userRoleLambdaQueryWrapper);
+        List<Long> roleIds = userRoles.stream()
+                .map(UserRole::getRoleId)
+                .collect(Collectors.toList());
+        //获取所有角色的列表
+        List<Role> roles = roleService.list();
+        //获取用户信息
+        UserVo userVo = BeanCopyUtils.copyBean(getById(id), UserVo.class);
+        UserRoleVo userRoleVo = new UserRoleVo(roleIds, roles, userVo);
+        return ResponseResult.okResult(userRoleVo);
+    }
+
+    @Override
+    public ResponseResult updateUser(UserUpdateDto userUpdateDto) {
+        User user = BeanCopyUtils.copyBean(userUpdateDto, User.class);
+
+        //对数据进行非空判断
+        if(!StringUtils.hasText(user.getNickName())){
+            throw new SystemException(AppHttpCodeEnum.NICKNAME_NOT_NULL);
+        }
+
+        LambdaQueryWrapper<UserRole> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(UserRole::getUserId,user.getId());
+        userRoleService.remove(wrapper);
+        List<UserRole> userRoles = userUpdateDto.getRoleIds().stream()
+                .map(roleId -> new UserRole(user.getId(), roleId))
+                .collect(Collectors.toList());
         userRoleService.saveBatch(userRoles);
         return ResponseResult.okResult();
     }

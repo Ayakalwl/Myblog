@@ -1,6 +1,7 @@
 package com.lxy.service;
 
 import com.lxy.domain.ResponseResult;
+import com.lxy.domain.dto.CategoryDto;
 import com.lxy.domain.entity.Category;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lxy.domain.vo.CategoryVo;
@@ -17,4 +18,14 @@ public interface CategoryService extends IService<Category> {
     ResponseResult getCategoryList();
 
     List<CategoryVo> listAllCategor();
+
+    ResponseResult getList(Integer pageNum, Integer pageSize, CategoryDto categoryDto);
+
+    ResponseResult addCategory(CategoryDto categoryDto);
+
+    ResponseResult getCategory(Long id);
+
+    ResponseResult updateCategory(CategoryDto categoryDto);
+
+    ResponseResult deleteCategory(Long id);
 }

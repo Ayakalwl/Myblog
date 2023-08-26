@@ -3,6 +3,7 @@ package com.lxy.controller;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.fastjson.JSON;
 import com.lxy.domain.ResponseResult;
+import com.lxy.domain.dto.CategoryDto;
 import com.lxy.domain.entity.Category;
 import com.lxy.domain.vo.CategoryVo;
 import com.lxy.domain.vo.ExcelCategoryVo;
@@ -12,9 +13,7 @@ import com.lxy.utils.BeanCopyUtils;
 import com.lxy.utils.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -54,4 +53,30 @@ public class CategoryController {
         }
 
     }
+
+    @GetMapping("/list")
+    public ResponseResult getList(Integer pageNum, Integer pageSize, CategoryDto categoryDto){
+        return categoryService.getList(pageNum,pageSize,categoryDto);
+    }
+
+    @PostMapping
+    public ResponseResult addCategory(@RequestBody CategoryDto categoryDto){
+        return categoryService.addCategory(categoryDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseResult getCategory(@PathVariable Long id){
+        return categoryService.getCategory(id);
+    }
+
+    @PutMapping
+    public ResponseResult updateCategory(@RequestBody CategoryDto categoryDto){
+        return categoryService.updateCategory(categoryDto);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseResult deleteCategory(@PathVariable Long id){
+        return categoryService.deleteCategory(id);
+    }
+
 }

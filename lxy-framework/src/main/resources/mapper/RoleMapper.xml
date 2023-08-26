@@ -12,5 +12,9 @@
             r.`status` = 0 AND
             r.`del_flag` = 0
     </select>
+    <select id="selectRoles" resultType="com.lxy.domain.entity.Role">
+        SELECT
+
+    </select>
 
 </mapper>

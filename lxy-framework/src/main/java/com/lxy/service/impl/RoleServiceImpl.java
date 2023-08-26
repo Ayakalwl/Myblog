@@ -93,8 +93,10 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
     }
 
     @Override
-    public ResponseResult deleteRole(Integer id) {
-        removeById(id);
+    public ResponseResult deleteRole(List<Long> id) {
+        for (Long roleId:id){
+            removeById(roleId);
+        }
         return ResponseResult.okResult();
     }
 

@@ -3,7 +3,10 @@ package com.lxy.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.lxy.domain.ResponseResult;
 import com.lxy.domain.dto.UserDto;
+import com.lxy.domain.dto.UserUpdateDto;
 import com.lxy.domain.entity.User;
+
+import java.util.List;
 
 
 /**
@@ -21,4 +24,10 @@ public interface UserService extends IService<User> {
     ResponseResult getList(Integer pageNum, Integer pageSize, UserDto userDto);
 
     ResponseResult addUser(UserDto userDto);
+
+    ResponseResult removeUser(List<Long> id);
+
+    ResponseResult getUser(Long id);
+
+    ResponseResult updateUser(UserUpdateDto userUpdateDto);
 }

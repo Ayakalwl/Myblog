@@ -1,5 +1,6 @@
 package com.lxy.job;
 
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.lxy.domain.entity.Article;
 import com.lxy.service.ArticleService;
 import com.lxy.utils.RedisCache;
@@ -30,7 +31,11 @@ public class UpdateViewCountJob {
                 .map(entry -> new Article(Long.valueOf(entry.getKey()), entry.getValue().longValue()))
                 .collect(Collectors.toList());
         //更新到数据库中
-        articleService.updateBatchById(articles);
-
+        for (Article article:articles){
+            LambdaUpdateWrapper<Article> wrapper = new LambdaUpdateWrapper<>();
+            wrapper.eq(Article::getId, article.getId())
+                    .set(Article::getViewCount, article.getViewCount());
+            articleService.update(wrapper);
+        }
     }
 }
