@@ -29,7 +29,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
 
     @Override
     public List<String> selectPermsByUserId(Long id) {
-        //如果是管理员返回所有权限
+        //如果是初始管理员返回所有权限
         if (id == 1L){
             LambdaQueryWrapper<Menu> wrapper = new LambdaQueryWrapper<>();
             wrapper.in(Menu::getMenuType, SystemConstants.MENU,SystemConstants.BUTTON)

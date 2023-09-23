@@ -80,6 +80,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         if(nickNameExist(user.getNickName())){
             throw new SystemException(AppHttpCodeEnum.NICKNAME_EXIST);
         }
+        if(emailExist(user.getEmail())){
+            throw new SystemException(AppHttpCodeEnum.EMAIL_EXIST);
+        }
         //...
         //对密码进行加密
         String encodePassword = passwordEncoder.encode(user.getPassword());
@@ -131,9 +134,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         //对数据进行是否存在的判断
         if(userNameExist(user.getUserName())){
             throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
-        }
-        if(phonenumberExist(user.getPhonenumber())){
-            throw new SystemException(AppHttpCodeEnum.PHONENUMBER_EXIST);
         }
         if(emailExist(user.getEmail())){
             throw new SystemException(AppHttpCodeEnum.EMAIL_EXIST);
@@ -216,11 +216,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return count(queryWrapper)>0;
     }
 
-    private boolean phonenumberExist(String phonenumber) {
-        LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(User::getPhonenumber,phonenumber);
-        return count(queryWrapper)>0;
-    }
 
     private boolean emailExist(String email) {
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
