@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -146,6 +147,16 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
         //添加 博客和标签的关联
         articleTagService.saveBatch(articleTags);
+
+        //查询博客信息  id  viewCount
+        List<Article> articles = getBaseMapper().selectList(null);
+        Map<String, Integer> viewCountMap = articles.stream()
+                .collect(Collectors.toMap(article1 -> article1.getId().toString(), article1 -> {
+                    return article1.getViewCount().intValue();//
+                }));
+        //存储到redis中
+        redisCache.setCacheMap("article:viewCount",viewCountMap);
+
         return ResponseResult.okResult();
     }
 

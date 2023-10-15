@@ -23,7 +23,7 @@ public class SwaggerConfig {
     private ApiInfo apiInfo() {
         Contact contact = new Contact("团队名", "http://www.my.com", "my@my.com");
         return new ApiInfoBuilder()
-                .title("前台接口")
+                .title("后台接口")
                 .description("文档描述")
                 // 联系方式
                 .contact(contact)

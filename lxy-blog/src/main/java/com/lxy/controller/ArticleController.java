@@ -19,6 +19,7 @@ public class ArticleController {
     public List<Article> test(){
         return articleService.list();
     }
+
     @GetMapping("/hotArticleList")
     public ResponseResult hotArticleList(){
         ResponseResult result = articleService.hotArticleList();

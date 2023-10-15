@@ -4,6 +4,8 @@ import com.lxy.domain.ResponseResult;
 import com.lxy.domain.dto.AddArticleDto;
 import com.lxy.domain.dto.ArticleDto;
 import com.lxy.domain.dto.UpdateArticleDto;
+import com.lxy.enums.AppHttpCodeEnum;
+import com.lxy.exception.SystemException;
 import com.lxy.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,9 @@ public class ArticleController {
 
     @PostMapping
     public ResponseResult add(@RequestBody AddArticleDto articleDto){
+        if (articleDto.getCategoryId() == null){
+            throw new SystemException(AppHttpCodeEnum.CATEGORYNAME_NOT_NULL);
+        }
         return articleService.add(articleDto);
     }
 
@@ -30,6 +35,12 @@ public class ArticleController {
     @GetMapping("/list")
     public ResponseResult list(Integer pageNum, Integer pageSize, ArticleDto articleDto){
         return articleService.articleList(pageNum,pageSize,articleDto);
+    }
+
+    @GetMapping("/hotArticleList")
+    public ResponseResult hotArticleList(){
+        ResponseResult result = articleService.hotArticleList();
+        return result;
     }
 
     @GetMapping("/{id}")
